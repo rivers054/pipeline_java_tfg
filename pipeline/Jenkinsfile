@@ -1,0 +1,88 @@
+pipeline {
+
+    agent any
+    
+    environment {
+        REGISTRY="rivers054"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -Dmaven.test.skip=true clean package'
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                    jacoco(execPattern:'target/*.exec', classPattern: 'target/classes', sourcePattern: 'src/main/java', exclusionPattern: 'src/test*')
+                }
+            }
+        }
+
+        stage ('SonarQube') {
+            steps {
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://172.23.0.100:9000'
+            }
+        }
+
+        stage('Contenedores') {
+            steps {
+                sh ''
+
+                withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'REGISTRY', passwordVariable: 'REGISTRYPASS')]){
+
+                    sh '''
+                    cp -f target/*.jar pipeline/
+                     
+                    docker build -f Dockerfile-imagen -t $JOB_NAME:$BUILD_NUMBER .
+
+                    docker login -u $REGISTRY -p ${REGISTRYPASS}
+                   
+                    docker tag $JOB_NAME:$BUILD_NUMBER $REGISTRY/$JOB_NAME:$BUILD_NUMBER
+
+                    docker push $REGISTRY/$JOB_NAME:$BUILD_NUMBER
+                    '''
+
+                }
+            }
+        }
+
+        stage('Despliegue') {
+            steps {
+                sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME #./pipeline/bbdd.sh'
+            }
+        }  
+    }
+
+    post {
+        success {
+             mail to: 'p.riosnavarro@gmail.com',
+             subject: "Éxito en la Pipeline: ${currentBuild.fullDisplayName}",
+             body: "No hubo ningún problema en ${env.BUILD_URL}"
+        }
+
+        failure {
+             mail to: 'p.riosnavarro@gmail.com',
+             subject: "Error Pipeline: ${currentBuild.fullDisplayName}",
+             body: "Algo ha ido mal con ${env.BUILD_URL}"
+        }
+
+        always {
+            sh '''
+            docker rmi $JOB_NAME:$BUILD_NUMBER
+            docker rmi $REGISTRY/$JOB_NAME:$BUILD_NUMBER
+            '''
+        }
+    }
+}
