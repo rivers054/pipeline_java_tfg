@@ -41,7 +41,6 @@ pipeline {
                 sh ''
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'REGISTRY', passwordVariable: 'REGISTRYPASS')]){
-
                     sh '''
                     cp -f target/*.jar pipeline/
                      
@@ -60,10 +59,9 @@ pipeline {
 
         stage('Despliegue') {
             steps {
-                sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME #./pipeline/bbdd.sh'
+                sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME.ja
             }
-        }  
-    }
+        }
 
     post {
         success {
