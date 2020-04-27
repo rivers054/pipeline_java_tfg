@@ -1,9 +1,7 @@
-FROM openjdk:7
+FROM openjdk:8-jre-alpine
 
-COPY *.jar /usr/src/myapp
+RUN mkdir /app
 
-WORKDIR /usr/src/myapp
+COPY *.jar  /app/app.jar
 
-RUN javac Main.java
-
-CMD ["java", "Main"]
+CMD java -jar /app/app.jar
