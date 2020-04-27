@@ -78,6 +78,7 @@ pipeline {
         }
 
         always {
+            deleteDir()
             sh '''
             docker rmi $JOB_NAME:$BUILD_NUMBER
             docker rmi $REGISTRY/$JOB_NAME:$BUILD_NUMBER
