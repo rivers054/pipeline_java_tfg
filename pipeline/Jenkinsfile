@@ -67,13 +67,13 @@ pipeline {
     post {
         success {
              mail to: 'p.riosnavarro@gmail.com',
-             subject: "Éxito en la Pipeline: ${currentBuild.fullDisplayName}",
+             subject: "Éxito en la pipeline: ${currentBuild.fullDisplayName}",
              body: "No hubo ningún problema en ${env.BUILD_URL}"
         }
 
         failure {
              mail to: 'p.riosnavarro@gmail.com',
-             subject: "Error Pipeline: ${currentBuild.fullDisplayName}",
+             subject: "Error en la pipeline: ${currentBuild.fullDisplayName}",
              body: "Algo ha ido mal con ${env.BUILD_URL}"
         }
 
