@@ -42,7 +42,7 @@ pipeline {
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'REGISTRY', passwordVariable: 'REGISTRYPASS')]){
                     sh '''
-                    #cp -f target/*.jar pipeline/
+                    cp -f target/*.jar pipeline/
                      
                     docker build -t $JOB_NAME:$BUILD_NUMBER pipeline/
 
