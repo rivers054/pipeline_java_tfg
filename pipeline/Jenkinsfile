@@ -45,7 +45,7 @@ pipeline {
                     sh '''
                     cp -f target/*.jar pipeline/
                      
-                    docker build -t $JOB_NAME:$BUILD_NUMBER .
+                    docker build -t $JOB_NAME:$BUILD_NUMBER pipeline/
 
                     docker login -u $REGISTRY -p ${REGISTRYPASS}
                    
