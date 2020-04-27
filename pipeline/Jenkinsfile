@@ -59,7 +59,7 @@ pipeline {
 
         stage('Despliegue') {
             steps {
-                sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME.ja
+                sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME.jar'
             }
         }
 
