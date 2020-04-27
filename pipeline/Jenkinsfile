@@ -62,6 +62,7 @@ pipeline {
                 sh 'sudo cp target/*.jar /bbdd/${BUILD_NUMBER}_$JOB_NAME.jar'
             }
         }
+    }
 
     post {
         success {
