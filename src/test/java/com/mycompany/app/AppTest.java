@@ -37,6 +37,7 @@ public class AppTest
             assertEquals("Prueba del TFG de Pablo Ríos" + System.getProperty("line.separator"), outContent.toString());
         } catch (AssertionError e) {
             fail("\"CUIDADO ALGO HA IDO MAL REVISA LOS TEST\"");
+            fail("\"message\" is not \"Prueba del TFG de Pablo Ríos\"");
         }
     }
 
