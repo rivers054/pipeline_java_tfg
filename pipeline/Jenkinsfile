@@ -37,7 +37,6 @@ pipeline {
 
         stage('Contenedores') {
             steps {
-                sh ''
 
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable: 'REGISTRY', passwordVariable: 'REGISTRYPASS')]){
                     sh '''
